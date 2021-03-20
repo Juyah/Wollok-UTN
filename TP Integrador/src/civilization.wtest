@@ -1,0 +1,208 @@
+import civilization.*
+
+describe "Requerimiento 1" {
+	test "La ciudad tiene una tranquilidad de 30" {
+		const ciudadOblivon = new Ciudad(habitantes = 100, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 10, imperio = new Imperio())
+		
+		assert.equals(30, ciudadOblivon.tranquilidad())
+	}
+	test "La disconformidad en una población de 350000 sin militares es de 35" {
+		const ciudadOblivon = new Ciudad(habitantes = 350000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 0, imperio = new Imperio())
+		
+		assert.equals(35, ciudadOblivon.disconformidad())
+	}
+	test "La disconformidad en una población de 550000 con 7 militares es de 62" {
+		const ciudadOblivon = new Ciudad(habitantes = 550000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = new Imperio())
+		
+		assert.equals(62, ciudadOblivon.disconformidad())
+	}
+	test "Una ciudad que es tranquila y esta endeudada no es feliz" {
+		const imperioEndeudado = new Imperio(ciudades = [ciudadOblivon], dinero = -10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperioEndeudado)
+		
+		assert.that(ciudadOblivon.esTranquila())
+		assert.that(ciudadOblivon.imperio().estaEndeudado())
+		assert.notThat(ciudadOblivon.esFeliz())
+	}
+	test "Una ciudad que no es tranquila y no esta endeudada no es feliz" {
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 500000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		
+		assert.notThat(ciudadOblivon.esTranquila())
+		assert.notThat(ciudadOblivon.imperio().estaEndeudado())
+		assert.notThat(ciudadOblivon.esFeliz())
+	}
+	test "Una ciudad que es tranquila y no esta endeudada es feliz" {
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		
+		assert.that(ciudadOblivon.esTranquila())
+		assert.notThat(ciudadOblivon.imperio().estaEndeudado())
+		assert.that(ciudadOblivon.esFeliz())
+	}
+	
+}
+
+describe "Requerimiento 2" {
+
+	test "Una ciudad que tiene mas de un millon de habitantes es grosa" {
+		const ciudadOblivon = new Ciudad(habitantes = 5000000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = new Imperio())
+		
+		assert.that(ciudadOblivon.esGrosa())
+	}
+	test "Una ciudad que tiene al menos 20 edificios y más de 10 unidades militares es grosa" {
+		const ciudadOblivon = new Ciudad(habitantes = 4500, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 17, imperio = new Imperio())
+		
+		assert.that(ciudadOblivon.esGrosa())
+	}
+	test "Una ciudad que tiene menos de un millon de habitantes, mas de 10 unidades militares y menos de 20 edificios no es grosa" {
+		const ciudadOblivon = new Ciudad(habitantes = 125000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 17, imperio = new Imperio())
+		
+		assert.notThat(ciudadOblivon.esGrosa())
+	}
+	test "Una ciudad que tiene menos de un millon de habitantes y menos de 11 unidades militares no es grosa" {
+		const ciudadOblivon = new Ciudad(habitantes = 450000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = new Imperio())
+		
+		assert.notThat(ciudadOblivon.esGrosa())
+	}
+	test "Un imperio es mas groso que otro si tiene más ciudades grosas" {
+		const ciudadGrosa1 = new Ciudad(habitantes = 5000000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = new Imperio())
+		const ciudadGrosa2 = new Ciudad(habitantes = 4500, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 17, imperio = new Imperio())
+		const ciudadGrosa3 = new Ciudad(habitantes = 1250000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 17, imperio = new Imperio())
+		const ciudadNoGrosa1 = new Ciudad(habitantes = 450000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3), new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = new Imperio())
+		const imperioMasGroso = new Imperio(ciudades = [ciudadGrosa1, ciudadGrosa2])
+		const imperioMenosGroso = new Imperio(ciudades = [ciudadGrosa3, ciudadNoGrosa1])
+		
+		assert.that(imperioMasGroso.esMasPoderosoQue(imperioMenosGroso))
+	}
+}
+
+describe "Requerimiento 3" {
+
+	test "Se le suma un 25% al costo base por tener 125000 habitantes en el sistema citadino" {
+		const edificio = new Economico(costoBase = 10, dinero = 0)
+		const costoTotal = citadino.costoDeConstrucion(edificio, new Ciudad(habitantes = 125000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 17, imperio = new Imperio()))
+		
+		assert.equals(edificio.costoBase() * 1.25 , costoTotal)
+	}
+	test "Se le resta $3 al costo base con un edificio que genera 9 de cultura en el sistema incentivo cultural" {
+		const edificio = new Cultural(costoBase = 10, cultura = 9)
+		const ciudadOblivon = new Ciudad(habitantes = 125000, edificios = [edificio], sistemaImpositivo = incentivoCultural, unidadesMilitares = 17, imperio = new Imperio())
+		
+		assert.equals(7, edificio.costoFinal(ciudadOblivon, ciudadOblivon.sistemaImpositivo()))
+	}
+	test "Una ciudad feliz se sumara un 17% al costo base en el sistema apaciguador" {
+		const edificio = new Cultural(costoBase = 10, cultura = 2)
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [edificio], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 1, imperio = imperio)
+
+		assert.equals(10 * 1.17, edificio.costoFinal(ciudadOblivon, ciudadOblivon.sistemaImpositivo()))
+	}
+	test "Una ciudad infeliz se le restara la tranquilidad que genera el edificio en el sistema apaciguador" {
+		const edificio = new Cultural(costoBase = 30, cultura = 3)
+		const imperioEndeudado = new Imperio(ciudades = [ciudadOblivon], dinero = -10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [edificio], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 7, imperio = imperioEndeudado)
+		
+		assert.equals(edificio.costoBase() - edificio.tranquilidad(), edificio.costoFinal(ciudadOblivon, ciudadOblivon.sistemaImpositivo()))
+	}
+	test "Al construir un edificio se añade a la ciudad" {
+		const edificio = new Cultural(costoBase = 30, cultura = 3)
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 100)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 7, imperio = imperio)
+		
+		ciudadOblivon.construirEdificio(edificio)
+		
+		assert.that(ciudadOblivon.edificios().contains(edificio))
+	}
+	test "El imperio gasta el costo del edificio" {
+		const edificio = new Cultural(costoBase = 30, cultura = 10)
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 100)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 7, imperio = imperio)
+		const dineroPrevio = imperio.dinero()
+		const costoDeConstruccion = edificio.costoFinal(ciudadOblivon, ciudadOblivon.sistemaImpositivo())
+		
+		ciudadOblivon.construirEdificio(edificio)
+		
+		assert.equals(dineroPrevio - costoDeConstruccion, imperio.dinero())
+	}
+	test "El imperio no construye si no tiene el dinero suficiente" {
+		const edificio = new Cultural(costoBase = 30, cultura = 3)
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 7, imperio = imperio)
+		
+		assert.throwsExceptionWithType(new ImperioSeEndeuda(), {ciudadOblivon.construirEdificio(edificio)})
+	}
+	test "No se puede construir un edificio militar si no hay suficientes habitantes" {
+		const edificio = new Militar(costoBase = 30, militares = 10)
+		const imperio = new Imperio(ciudades = [ciudadOblivon], dinero = 100)
+		const ciudadOblivon = new Ciudad(habitantes = 500, edificios = [], sistemaImpositivo = new Apaciguador(porcentaje = 17), unidadesMilitares = 7, imperio = imperio)
+		
+		assert.throwsExceptionWithType(new EdificioMilitarConHabitantesInsuficientes(), {ciudadOblivon.construirEdificio(edificio)})
+	}
+}
+
+describe "Requerimiento 4" {
+
+	test "Si la ciudad es feliz aumenta la población al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		const habitantesAnteriores = ciudadOblivon.habitantes()
+		
+		imperio.ciudadNueva(ciudadOblivon)
+		imperio.evolucionarImperio()
+		
+		assert.equals(habitantesAnteriores * 1.02, ciudadOblivon.habitantes())
+	}
+	test "Si la ciudad es infeliz mantiene la población al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = 10)
+		const ciudadOblivonInfeliz = new Ciudad(habitantes = 5000000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		const habitantesAnteriores = ciudadOblivonInfeliz.habitantes()
+		
+		imperio.ciudadNueva(ciudadOblivonInfeliz)
+
+		imperio.evolucionarImperio()
+		
+		assert.equals(habitantesAnteriores, ciudadOblivonInfeliz.habitantes())
+	}
+	test "El imperio gasta el costo de mantemiento sin estar endeudado al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		
+		imperio.ciudadNueva(ciudadOblivon)
+		
+		imperio.evolucionarImperio()
+		
+		assert.notThat(imperio.estaEndeudado())
+	}
+	test "El imperio gasta el costo de mantemiento estando endeudado al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = -1000)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 10), new Cultural(cultura = 8, costoBase = 5), new Militar(militares = 2, costoBase = 3), new Economico(dinero = 4, costoBase = 3)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		
+		imperio.ciudadNueva(ciudadOblivon)
+		
+		imperio.evolucionarImperio()
+		
+		assert.that(imperio.estaEndeudado())
+	}
+	test "El imperio cobra de los edificios economicos al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = 10)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Economico(dinero = 2, costoBase = 1), new Economico(dinero = 4, costoBase = 1)], sistemaImpositivo = citadino, unidadesMilitares = 7, imperio = imperio)
+		const dineroAnterior = imperio.dinero()
+		
+		imperio.ciudadNueva(ciudadOblivon)
+		
+		imperio.evolucionarImperio()
+		
+		assert.equals(dineroAnterior + 5.798, imperio.dinero())
+	}
+	test "Se añaden los militares a la ciudad al evolucionar el imperio" {
+		const imperio = new Imperio(ciudades = [], dinero = 100)
+		const ciudadOblivon = new Ciudad(habitantes = 5000, edificios = [new Militar(militares = 12, costoBase = 5)], sistemaImpositivo = citadino, unidadesMilitares = 25, imperio = imperio)
+		const militaresAntriores = ciudadOblivon.unidadesMilitares()
+		imperio.ciudadNueva(ciudadOblivon)
+		
+		imperio.evolucionarImperio()
+		
+		assert.equals(militaresAntriores + ciudadOblivon.edificios().sum{unEdificio => unEdificio.militares()}, ciudadOblivon.unidadesMilitares())
+	}
+}
